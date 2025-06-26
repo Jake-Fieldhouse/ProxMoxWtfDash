@@ -26,14 +26,18 @@ if [ -z "$REPO_URL" ]; then
     REPO_URL="$DEFAULT_REPO_URL"
 fi
 
+apt-get update -y
+DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip tailscale curl
+
+if ! command -v git >/dev/null 2>&1; then
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git
+fi
+
 if [ -d "$INSTALL_DIR/.git" ]; then
     git -C "$INSTALL_DIR" pull --ff-only
 else
     git clone "$REPO_URL" "$INSTALL_DIR"
 fi
-
-apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip git tailscale curl
 
 pip3 install --break-system-packages -r "$INSTALL_DIR/requirements.txt"
 
