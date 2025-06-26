@@ -11,6 +11,9 @@ fi
 
 REPO_URL=""
 
+# Repository to use if detection fails
+DEFAULT_REPO_URL="https://github.com/Jake-Fieldhouse/ProxMoxWtfDash.git"
+
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     REPO_URL=$(git config --get remote.origin.url)
 fi
@@ -20,8 +23,7 @@ if [ -z "$REPO_URL" ] && [ -d "$INSTALL_DIR/.git" ]; then
 fi
 
 if [ -z "$REPO_URL" ]; then
-    echo "Unable to detect repository URL" >&2
-    exit 1
+    REPO_URL="$DEFAULT_REPO_URL"
 fi
 
 if [ -d "$INSTALL_DIR/.git" ]; then
