@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
+HOST=${1:-wtf}
 SERVICE=wtf-proxmoxdash
 INSTALL_DIR=/opt/$SERVICE
 LOG_FILE=/var/log/$SERVICE.log
+DOMAIN="${HOST}-proxmoxdash.hosted.jke"
 
 if [ "$EUID" -ne 0 ]; then
     echo "Run as root" >&2
@@ -65,9 +67,9 @@ fi
 pip3 install --break-system-packages -r "$INSTALL_DIR/requirements.txt"
 
 CUR_HOST=$(hostname)
-if [ "$CUR_HOST" != "$SERVICE" ]; then
-    hostnamectl set-hostname "$SERVICE"
-    tailscale set --hostname "$SERVICE" >/dev/null 2>&1 || true
+if [ "$CUR_HOST" != "$HOST" ]; then
+    hostnamectl set-hostname "$HOST"
+    tailscale set --hostname "$HOST" >/dev/null 2>&1 || true
     systemctl restart tailscaled || true
 fi
 
@@ -94,5 +96,5 @@ systemctl enable --now $SERVICE
 
 LAN_IP=$(hostname -I | awk '{print $1}')
 TS_IP=$(tailscale ip -4 2>/dev/null | head -n1)
-echo "$SERVICE running at http://wtf-proxmoxdash.hosted.jke:8750 and http://${LAN_IP}:8750${TS_IP:+ and http://${TS_IP}:8750}"
+echo "$SERVICE running at http://${DOMAIN}:8750 and http://${LAN_IP}:8750${TS_IP:+ and http://${TS_IP}:8750}"
 
