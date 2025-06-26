@@ -11,6 +11,9 @@ fi
 
 REPO_URL=""
 
+apt-get update -y
+DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip git tailscale curl
+
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     REPO_URL=$(git config --get remote.origin.url)
 fi
@@ -29,9 +32,6 @@ if [ -d "$INSTALL_DIR/.git" ]; then
 else
     git clone "$REPO_URL" "$INSTALL_DIR"
 fi
-
-apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip git tailscale curl
 
 pip3 install --break-system-packages -r "$INSTALL_DIR/requirements.txt"
 
