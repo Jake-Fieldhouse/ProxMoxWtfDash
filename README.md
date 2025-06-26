@@ -8,3 +8,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Jake-Fieldhouse/ProxMoxWtfDa
 ```
 
 The dashboard will then be available at `http://wtf-proxmoxdash.hosted.jke:8750` and at `http://<lan-ip>:8750`.
+
+## License
+
+This project is licensed under the terms of the [MIT License](LICENSE).
