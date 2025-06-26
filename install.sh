@@ -9,6 +9,27 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+check_proxmox_dns() {
+    local host_ip=""
+    if command -v getent >/dev/null 2>&1; then
+        host_ip=$(getent hosts proxmox.hosted.jke | awk '{print $1}' | head -n1)
+    fi
+    if [ -z "$host_ip" ] && command -v dig >/dev/null 2>&1; then
+        host_ip=$(dig +short proxmox.hosted.jke | head -n1)
+    fi
+    if [ -z "$host_ip" ]; then
+        echo "Could not resolve proxmox.hosted.jke. Please fix DNS before running the installer." >&2
+        exit 1
+    fi
+    local local_ip
+    local_ip=$(hostname -I | awk '{print $1}')
+    echo "proxmox.hosted.jke resolves to $host_ip (local IP: $local_ip)"
+    if [ "$host_ip" != "$local_ip" ]; then
+        echo "proxmox.hosted.jke does not resolve to this machine. Fix DNS before installing." >&2
+        exit 1
+    fi
+}
+
 REPO_URL=""
 
 # Repository to use if detection fails
@@ -25,6 +46,8 @@ fi
 if [ -z "$REPO_URL" ]; then
     REPO_URL="$DEFAULT_REPO_URL"
 fi
+
+check_proxmox_dns
 
 apt-get update -y
 DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip tailscale curl
