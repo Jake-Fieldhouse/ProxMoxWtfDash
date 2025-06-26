@@ -4,7 +4,7 @@ Dash for automatically consolidating addresses and service links for a Proxmox h
 Install on your Proxmox host with:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/<your-user>/ProxMoxWtfDash/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/Jake-Fieldhouse/ProxMoxWtfDash/main/install.sh)
 ```
 
 The dashboard will then be available at `http://wtf-proxmoxdash.hosted.jke:8750` and at `http://<lan-ip>:8750`.
